@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour
 	//show just the notes the player needs to see. If in every cup is just one note then just show them
 	void SetNumberPapers()
 	{
-		if (!AllNotesForPerfectAiMode)//show just the perfect note for every cup
+		if (!AllNotesForPerfectAiMode)//deactivate all Notes
 		{
 			foreach (var cups in AllCupsWithNotes)
 			{
@@ -207,7 +207,7 @@ public class GameManager : MonoBehaviour
 				}
 			}
 		}
-		if (!perfectMode)//show all notes the ai didn't delete
+		if (!perfectMode)// if learn mode is activated
 		{
 			for (int i = 0; i < saveD.RemainingCups.Count; i++)
 			{
@@ -464,8 +464,6 @@ public class GameManager : MonoBehaviour
 					explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
 				Ui.SendMassageToChat(explanation);
 			}
-
-			//Ui.WhosTurn = (int)Turn.Player;
 			lastDrawer = Turn.AI;
 			ActivePlayer = Turn.Player;
 		}

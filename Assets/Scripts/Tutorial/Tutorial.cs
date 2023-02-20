@@ -25,7 +25,7 @@ public class Tutorial : MonoBehaviour
 	public Image ImageForTutorial;
 
 	//Counter to go right or left in the Array
-	private static int countSteps = 0;
+	private int countSteps = 0;
 
 	//enum for a step to the right or left
 	private enum Direction
@@ -58,25 +58,6 @@ public class Tutorial : MonoBehaviour
 
 	//set the new text and img in the right Direction
 	private void ChangeTutorial(Direction direction){
-		// if(direction == Direction.Right){
-
-		//     if(countSteps == AllTexts.Length - 1)//if the counter is on the last position reset to start from step 0
-		// 		countSteps = 0;
-		// 	else
-		// 		countSteps++;
-		// 	string adjustedText = SplitString(AllTexts[countSteps]);
-		// 	tutorialText.text = adjustedText;
-		// 	ImageForTutorial.sprite = AllSprites[countSteps];
-		// }
-		// else if(direction == Direction.Left){
-		//     if(countSteps == 0)//if the counter is on the first position set counter to last position to go left
-		// 		countSteps = AllTexts.Length - 1;
-		// 	else
-		// 		countSteps--;
-		// 	string adjustedText = SplitString(AllTexts[countSteps]);
-		// 	tutorialText.text = adjustedText;
-		// 	ImageForTutorial.sprite = AllSprites[countSteps];
-		// }
 		if(direction == Direction.Left && countSteps == 0)
 			countSteps = AllTexts.Length;
 		countSteps = (countSteps + (direction == Direction.Right ? 1 : -1)) % AllTexts.Length;
