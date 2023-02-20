@@ -416,9 +416,10 @@ public class GameManager : MonoBehaviour
 				Ui.SendMassageToChat(explanation);
 			}
 			yield return StartCoroutine(Timer(5));
-			if(AmmountMatches == 1)
+			if(AmmountMatches == 1 || AmmountMatches - number == 1)
 				explanation = "Es bleibt noch: 1 Streichholz übrig.";
-			explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
+			else
+				explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
 			if(!perfectMode)
 				Ui.SendMassageToChat(explanation);
 			//Ui.WhosTurn = (int)Turn.AI;
@@ -432,9 +433,6 @@ public class GameManager : MonoBehaviour
 			if (AmmountMatches == 1)// if only one match is there can just draw one match
 			{
 				number = 1;
-				yield return StartCoroutine(Timer(5));
-				explanation = "Es bleibt nur noch ein Streichholz übrig.";
-				Ui.SendMassageToChat(explanation);
 				yield return StartCoroutine(Timer(5));
 				explanation = "Der Computer zieht das letzte Streichholz.";
 				Ui.SendMassageToChat(explanation);
@@ -460,7 +458,10 @@ public class GameManager : MonoBehaviour
 				int newCup = cupText - number;//rest ammount of matches but named cup because the ai draws the number in a cup
 				Move_Drawn_Number(RestAmmountOfCups, number);
 				//yield return StartCoroutine(Timer(5));
-				explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
+				if(AmmountMatches == 1 || AmmountMatches - number == 1)
+					explanation = "Es bleibt noch: 1 Streichholz übrig.";
+				else
+					explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
 				Ui.SendMassageToChat(explanation);
 			}
 
