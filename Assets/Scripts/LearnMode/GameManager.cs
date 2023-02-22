@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 	public Quaternion targetRotation;
 
 	//whos is playing the player or the AI
-	private Turn ActivePlayer = Turn.AI;
+	private static Turn ActivePlayer;
 
 	//Object for the saved list with numbers
 	private SaveData saveD;
@@ -94,8 +94,8 @@ public class GameManager : MonoBehaviour
 
 	//variables to check whiche mode and which settings
 	public static bool perfectMode;
-	public static bool firstTurn;
-	public static bool AllNotesForPerfectAiMode;
+	public bool firstTurn;
+	public bool AllNotesForPerfectAiMode;
 
 	// Start is called before the first frame update
 	void Start()
@@ -108,24 +108,28 @@ public class GameManager : MonoBehaviour
 		if(firstTurn){
 			ActivePlayer = Turn.Player;
 			explanation = "Den ersten Zug macht der Spieler.";
-			Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
+			//Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		}
 		if(!firstTurn){
 			ActivePlayer = Turn.AI;
 			explanation = "Den ersten Zug macht der Computer.";
-			Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		}
+		Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		//load the data
 		saveD = SaveGameManager.Load();
 		//dissable buttons if the game is in the perfect ai mode
+		MakeList();
+		//SetNumberPapers();
 		if (perfectMode)
 		{
 			Ui.BTN_ActivateLearning.interactable = false;
 			Ui.LearningOnOff = false;
 			Ui.ChangeLearning();
+			SetNumberPapers(PerfectAINumbers);
 		}
-		MakeList();
-		SetNumberPapers();
+		else{
+			SetNumberPapers(saveD.RemainingCups);
+		}
 		Time.timeScale = 1f;//set time to 1 so its not frozen
 		PauseGame = Ui.GameIsPaused;
 		Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
@@ -195,10 +199,8 @@ public class GameManager : MonoBehaviour
 		};
 	}
 	//show just the notes the player needs to see. If in every cup is just one note then just show them
-	void SetNumberPapers()
-	{
-		if (!AllNotesForPerfectAiMode)//deactivate all Notes
-		{
+	void SetNumberPapers(List<List<int>> NumberList){
+		if (AllNotesForPerfectAiMode || !perfectMode){
 			foreach (var cups in AllCupsWithNotes)
 			{
 				foreach (var item in cups)
@@ -207,28 +209,14 @@ public class GameManager : MonoBehaviour
 				}
 			}
 		}
-		if (!perfectMode)// if learn mode is activated
-		{
-			for (int i = 0; i < saveD.RemainingCups.Count; i++)
+			for (int i = 0; i < NumberList.Count; i++)
 			{
-				for (int j = 0; j < saveD.RemainingCups[i].Count; j++)
+				for (int j = 0; j < NumberList[i].Count; j++)
 				{
-					int cache = saveD.RemainingCups[i][j] - 1;
+					int cache = NumberList[i][j] - 1;
 					AllCupsWithNotes[i][cache].SetActive(true);
 				}
 			}
-		}
-		else{//show notes for the perfect mode
-			for (int i = 0; i < PerfectAINumbers.Count; i++)
-			{
-				for (int j = 0; j <PerfectAINumbers[i].Count; j++)
-				{
-					int cache = PerfectAINumbers[i][j] - 1;
-					AllCupsWithNotes[i][cache].SetActive(true);
-				}
-			}
-		}
-
 	}
 
 	// check if the game is paused or not
@@ -316,7 +304,7 @@ public class GameManager : MonoBehaviour
 			if (noteNumber != 0)
 			{
 				//Da in Becher 2 nur 2 Zettel dann muss der Zettel mit der Nummer 2 an die Position von Zettel nummer 3 bewegt werden.
-				if (i == 0 && noteNumber == 2)
+				if ( noteNumber == 3 || (i == 0 && noteNumber == 2) )
 				{
 					AllCupsWithNotes[i][noteNumber - 1].transform.rotation = new Quaternion(0, 0, -0.13053f, 0.99144f);
 					FinishPos.x = -0.134f;
@@ -326,11 +314,11 @@ public class GameManager : MonoBehaviour
 					AllCupsWithNotes[i][noteNumber - 1].transform.rotation = new Quaternion(0, 0, 0.13053f, 0.99144f);
 					FinishPos.x = +0.134f;
 				}
-				if (noteNumber == 3)
-				{
-					AllCupsWithNotes[i][noteNumber - 1].transform.rotation = new Quaternion(0, 0, -0.13053f, 0.99144f);
-					FinishPos.x = -0.134f;
-				}
+				// if (noteNumber == 3)
+				// {
+				// 	AllCupsWithNotes[i][noteNumber - 1].transform.rotation = new Quaternion(0, 0, -0.13053f, 0.99144f);
+				// 	FinishPos.x = -0.134f;
+				// }
 				AllCupsWithNotes[i][noteNumber - 1].transform.position -= FinishPos;
 			}
 		}
@@ -362,17 +350,13 @@ public class GameManager : MonoBehaviour
 		Debug.Log(AllCupsWithNotes[Cup_Number][DrawnNumber - 1].transform.rotation);
 		Quaternion FinishRotation = new Quaternion(0, 0, 0, 0);
 		Vector3 FinishPos = new Vector3(0, 0.683f, 0);
-		if (Cup_Number == 0 && DrawnNumber == 2)
+		if (DrawnNumber == 3 || (Cup_Number == 0 && DrawnNumber == 2) )
 		{
 			FinishPos.x = -0.134f;
 		}
 		if (DrawnNumber == 1)
 		{
 			FinishPos.x = +0.134f;
-		}
-		if (DrawnNumber == 3)
-		{
-			FinishPos.x = -0.134f;
 		}
 		AllCupsWithNotes[Cup_Number][DrawnNumber - 1].transform.rotation = FinishRotation;
 		AllCupsWithNotes[Cup_Number][DrawnNumber - 1].transform.position += FinishPos;
@@ -433,13 +417,13 @@ public class GameManager : MonoBehaviour
 			if (AmmountMatches == 1)// if only one match is there can just draw one match
 			{
 				number = 1;
-				yield return StartCoroutine(Timer(5));
+				//yield return StartCoroutine(Timer(5));
 				explanation = "Der Computer zieht das letzte Streichholz.";
 				Ui.SendMassageToChat(explanation);
 			}
 			else
 			{
-				yield return StartCoroutine(Timer(5));
+				//yield return StartCoroutine(Timer(5));
 				Set_Outline_Cups(Cups, RestAmmountOfCups);
 				if (!perfectMode){// disable message for perfect ai mode
 					explanation = "Der Computer wählt aus Becher " + (RestAmmountOfCups + 2) + " eine Zahl aus.";
@@ -479,7 +463,8 @@ public class GameManager : MonoBehaviour
 		yield return StartCoroutine(Timer(5));
 		//yield return new WaitUntil(() => !NeedsToMove);
 		DeleteMatches();
-		Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
+		if(AmmountMatches != 0)
+			Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		Set_Outline_Cups(Cups, -1);
 		CheckGame();
 	}
@@ -495,6 +480,7 @@ public class GameManager : MonoBehaviour
 		numberMatch = number;
 		NeedsToMove = true;
 	}
+
 	//Delete matches
 	private void DeleteMatches()
 	{

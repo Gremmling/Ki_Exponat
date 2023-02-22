@@ -64,11 +64,11 @@ public class UI : MonoBehaviour
 
 	//booleans for diffrent moments
 	public bool isClicked;//when player has choosen a number
-	public bool GameIsPaused = false;//when game is paused
 	public bool LearningOnOff = true;//to switch the learn mode on or off
 	public bool FinishScreenIsActivaed = false; //to hide or show the pop up for the finish screen
-	private bool PauseIsClicked = true;//if button pause is clicked
-	// Start is called before the first frame update
+	private bool PauseIsClicked = false;//if button pause is clicked
+	public bool GameIsPaused = false;//when game is paused
+									   // Start is called before the first frame update
 	void Start()
 	{
 		//fill the three Buttons into the array
@@ -84,14 +84,15 @@ public class UI : MonoBehaviour
 		//add on click to pause button
 		BTN_Pause.onClick.AddListener(() =>
 		{
-		if (PauseIsClicked){// if PauseIsClicked == true change value to false and call Pause game
-				PauseIsClicked = false;
+			PauseIsClicked = !PauseIsClicked;
+			if (PauseIsClicked)
+			{// if PauseIsClicked == true change value to false and call Pause game
 				PauseGame();
-		}
-		else if(!PauseIsClicked){// if PauseIsClicked == false change value to true and call Pause game
-				PauseIsClicked = true;
+			}
+			else
+			{// if PauseIsClicked == false change value to true and call Pause game
 				ResumeGame();
-		}
+			}
 		});
 		BTN_Resume.onClick.AddListener(() => ResumeGame());
 		BTN_NewGame.onClick.AddListener(() => NewGame());
@@ -99,20 +100,26 @@ public class UI : MonoBehaviour
 		BTN_Exit.onClick.AddListener(() => GoHome());
 	}
 
-	void Update(){
+	void Update()
+	{
 		//Check if Player is pressing escape while he plays the game.
-		if(Input.GetKeyDown(KeyCode.Escape)){
-			if(GameIsPaused){//if GameIsPaused = true resume game
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			PauseIsClicked = !PauseIsClicked;
+			if (GameIsPaused)
+			{//if GameIsPaused = true resume game
 				ResumeGame();
 			}
-			else{//if GameIsPaused = false pause game
+			else
+			{//if GameIsPaused = false pause game
 				PauseGame();
 			}
 		}
 	}
 
 	//Function to show the finish screen
-	public void ShowFinishScreen(){
+	public void ShowFinishScreen()
+	{
 		GameIsPaused = true;
 		FinishScreenIsActivaed = true;
 		//disable all Buttons
@@ -125,16 +132,19 @@ public class UI : MonoBehaviour
 		FinishScreen.SetActive(true);
 	}
 
-	private void GoHome(){
+	private void GoHome()
+	{
 		SceneManager.LoadScene("MainMenu");
 	}
 
-	private void NewGame(){
+	private void NewGame()
+	{
 		SceneManager.LoadScene("LearnGame");
 	}
 
 	//Function to pause game
-	private void PauseGame(){
+	private void PauseGame()
+	{
 		GameIsPaused = true;
 		//activate pause popup
 		PausePopUp.SetActive(true);
@@ -145,13 +155,14 @@ public class UI : MonoBehaviour
 		Time.timeScale = 0f;
 	}
 
-	private void ResumeGame(){
-		Debug.Log(WhosTurn);
+	private void ResumeGame()
+	{
 		GameIsPaused = false;
 		//hide pause popup
 		PausePopUp.SetActive(false);
 		//is it the players turn so activate all three number buttons for him
-		if(WhosTurn != 1){
+		if (WhosTurn != 1)
+		{
 			Button_EnableOrDisable(true, 3);
 			Debug.Log("Buttons aktiviert");
 		}
@@ -162,23 +173,14 @@ public class UI : MonoBehaviour
 	}
 
 	//switch between learning mode on or off
-	public void ChangeLearning(){
-		if(LearningOnOff){
-			BTN_ActivateLearning.image.sprite = Off;//change sprite to off
-			Sprite_Learn = Off;
-			Sprite_Outline_Learn = Sprite_Learn_Off_Outline;
-			LearningOnOff = !LearningOnOff;
-		}
-		else if(!LearningOnOff){
-			BTN_ActivateLearning.image.sprite = On;//change sprite to on
-			Sprite_Learn = On;
-			Sprite_Outline_Learn = Sprite_Learn_On_Outline;
-			LearningOnOff = !LearningOnOff;
-		}
+	public void ChangeLearning()
+	{
+		LearningOnOff = !LearningOnOff;
 	}
 
 	//set value of the fill ammount of the Circle
-	public void FillCircleValue(float value){
+	public void FillCircleValue(float value)
+	{
 		uiFill.fillAmount = value;
 	}
 
@@ -187,7 +189,8 @@ public class UI : MonoBehaviour
 	{
 		for (int i = 0; i < AmmountMatchesChooseButtons.Length; i++)
 		{
-			if(i < AmmountBTN){
+			if (i < AmmountBTN)
+			{
 				AmmountMatchesChooseButtons[i].interactable = ButtonSwitch;
 				AmmountMatchesChooseButtons[i].GetComponent<BoxCollider>().enabled = ButtonSwitch;
 			}
@@ -204,10 +207,12 @@ public class UI : MonoBehaviour
 	//switch img to show whos turn is acitve
 	public void ChangeTurn(string turn)
 	{
-		if(turn.Equals("Player")){
+		if (turn.Equals("Player"))
+		{
 			TurnImg.sprite = PlayerTurnSprite;
 		}
-		else if(turn.Equals("AI")){
+		else if (turn.Equals("AI"))
+		{
 			TurnImg.sprite = KiTurnSprite;
 		}
 	}
@@ -231,7 +236,7 @@ public class UI : MonoBehaviour
 
 		for (int i = 0; i < messageList.Count - 1; i++)//set othere messages to a grey
 		{
-				messageList[i].textObject.GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 100);
+			messageList[i].textObject.GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 100);
 		}
 	}
 }
