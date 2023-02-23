@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
 		//set who starts the game
 		if(firstTurn){
 			ActivePlayer = Turn.Player;
-			explanation = "Den ersten Zug macht der Spieler.";
+			explanation = "Den ersten Zug macht der Mensch.";
 			//Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		}
 		if(!firstTurn){
@@ -134,7 +134,8 @@ public class GameManager : MonoBehaviour
 		PauseGame = Ui.GameIsPaused;
 		Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		Set_Outline_Cups(Cups, -1);//dissabel outlines of cups
-		Set_Outline_Cups(Cups, RestAmmountOfCups);
+		if(ActivePlayer == Turn.AI)
+			Set_Outline_Cups(Cups, RestAmmountOfCups);
 		if (!perfectMode)//if not in perfect mode send message to chat window
 			Ui.SendMassageToChat(explanation);
 		CheckGame();
@@ -246,7 +247,7 @@ public class GameManager : MonoBehaviour
 		}
 		else if (lastDrawer == Turn.AI)//player wins game
 		{
-			explanation = "Der Spieler hat gewonnen.";
+			explanation = "Der Mensch hat gewonnen.";
 			Ui.SendMassageToChat(explanation);
 			yield return StartCoroutine(Timer(5));
 			if (LearnBool && !perfectMode)//ai should learn
@@ -396,10 +397,11 @@ public class GameManager : MonoBehaviour
 			number = Ui.Matches;
 			int newCup = cupText - number;
 			if (!perfectMode){//disable the message for perfect ai mode
-				explanation = "Der Spieler wählt die Zahl " + number + ".";
+				explanation = "Der Mensch wählt die Zahl " + number + ".";
 				Ui.SendMassageToChat(explanation);
 			}
-			yield return StartCoroutine(Timer(5));
+			//yield return StartCoroutine(Timer(5));
+			yield return new WaitForSeconds(1);
 			if(AmmountMatches == 1 || AmmountMatches - number == 1)
 				explanation = "Es bleibt noch: 1 Streichholz übrig.";
 			else
@@ -436,7 +438,8 @@ public class GameManager : MonoBehaviour
 					number = KI_Draw_Random_Number(saveD.RemainingCups[RestAmmountOfCups]);
 				lastDrawnNumber = number;
 				drawnNumbers[RestAmmountOfCups] = number;//save drawn number
-				yield return StartCoroutine(Timer(5));
+				//yield return StartCoroutine(Timer(5));
+				yield return new WaitForSeconds(1);
 				explanation = "Der Computer wählt die Zahl " + drawnNumbers[RestAmmountOfCups] + " aus.";
 				Ui.SendMassageToChat(explanation);
 				int newCup = cupText - number;//rest ammount of matches but named cup because the ai draws the number in a cup

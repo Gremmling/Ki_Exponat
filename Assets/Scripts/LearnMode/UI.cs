@@ -16,14 +16,6 @@ public class UI : MonoBehaviour
 	[Range(0, 100)]
 	public Image uiFill;
 
-	//two sprites to show if the learn mode is on or off
-	public Sprite On;
-	public Sprite Off;
-
-	public Sprite Sprite_Learn_On_Outline;
-	public Sprite Sprite_Learn_Off_Outline;
-
-
 	public Sprite Sprite_Learn;
 
 	public Sprite Sprite_Outline_Learn;
