@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
 
 	private int lastCup;
 	private int lastDrawnNumber;
-	private int AmmountMatches = 10;
+	private int AmountMatches = 10;
 	private int RestAmmountOfCups = 8;
 	private int numberMatch = 0;
 
@@ -223,11 +223,11 @@ public class GameManager : MonoBehaviour
 	// check if the game is paused or not
 	void CheckGame()
 	{
-		if (AmmountMatches == 0)
+		if (AmountMatches == 0)
 		{
 			StartCoroutine(EndGame());
 		}
-		else if (AmmountMatches >= 0)
+		else if (AmountMatches >= 0)
 		{
 			StartCoroutine(DoTurn());
 		}
@@ -386,9 +386,9 @@ public class GameManager : MonoBehaviour
 		{
 			Ui.WhosTurn = (int)ActivePlayer;
 			//if and elses for the player if there are only two or one match disable the other buttons
-			if (AmmountMatches == 1)
+			if (AmountMatches == 1)
 				Ui.Button_EnableOrDisable(true, 1);
-			else if (AmmountMatches == 2)
+			else if (AmountMatches == 2)
 				Ui.Button_EnableOrDisable(true, 2);
 			else
 				Ui.Button_EnableOrDisable(true, 3);
@@ -400,9 +400,8 @@ public class GameManager : MonoBehaviour
 				explanation = "Der Mensch wählt die Zahl " + number + ".";
 				Ui.SendMassageToChat(explanation);
 			}
-			//yield return StartCoroutine(Timer(5));
-			yield return new WaitForSeconds(1);
-			if(AmmountMatches == 1 || AmmountMatches - number == 1)
+			yield return StartCoroutine(Timer(1));
+			if(AmountMatches == 1 || AmountMatches - number == 1)
 				explanation = "Es bleibt noch: 1 Streichholz übrig.";
 			else
 				explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
@@ -416,7 +415,7 @@ public class GameManager : MonoBehaviour
 		{
 			Ui.WhosTurn = (int)ActivePlayer;
 			Ui.Button_EnableOrDisable(false, 3);
-			if (AmmountMatches == 1)// if only one match is there can just draw one match
+			if (AmountMatches == 1)// if only one match is there can just draw one match
 			{
 				number = 1;
 				//yield return StartCoroutine(Timer(5));
@@ -438,14 +437,13 @@ public class GameManager : MonoBehaviour
 					number = KI_Draw_Random_Number(saveD.RemainingCups[RestAmmountOfCups]);
 				lastDrawnNumber = number;
 				drawnNumbers[RestAmmountOfCups] = number;//save drawn number
-				//yield return StartCoroutine(Timer(5));
-				yield return new WaitForSeconds(1);
+				yield return StartCoroutine(Timer(1));
 				explanation = "Der Computer wählt die Zahl " + drawnNumbers[RestAmmountOfCups] + " aus.";
 				Ui.SendMassageToChat(explanation);
 				int newCup = cupText - number;//rest ammount of matches but named cup because the ai draws the number in a cup
 				Move_Drawn_Number(RestAmmountOfCups, number);
 				//yield return StartCoroutine(Timer(5));
-				if(AmmountMatches == 1 || AmmountMatches - number == 1)
+				if(AmountMatches == 1 || AmountMatches - number == 1)
 					explanation = "Es bleibt noch: 1 Streichholz übrig.";
 				else
 					explanation = "Es bleiben noch: " + newCup + " Streichhölzer.";
@@ -454,9 +452,9 @@ public class GameManager : MonoBehaviour
 			lastDrawer = Turn.AI;
 			ActivePlayer = Turn.Player;
 		}
-		if (AmmountMatches > 1)
+		if (AmountMatches > 1)
 			RestAmmountOfCups -= number;
-		AmmountMatches -= number;
+		AmountMatches -= number;
 		Ui.isClicked = false;
 		yield return StartCoroutine(Timer(5));
 		RotateMatches(number);
@@ -466,7 +464,7 @@ public class GameManager : MonoBehaviour
 		yield return StartCoroutine(Timer(5));
 		//yield return new WaitUntil(() => !NeedsToMove);
 		DeleteMatches();
-		if(AmmountMatches != 0)
+		if(AmountMatches != 0)
 			Ui.ChangeTurn(Enum.GetName(typeof(Turn), ActivePlayer));
 		Set_Outline_Cups(Cups, -1);
 		CheckGame();

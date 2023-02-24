@@ -13,13 +13,13 @@ public class ToggleButton : ButtonHover
 	public Boolean Activated;
 
 	void Start(){
+		Activated = false;
 		BTN_Button.onClick.AddListener(() => {
 				Activated = !Activated;
 				UpdateSprite();
 			});
 		UpdateSprite();
 	}
-
 
 	override protected void UpdateSprite(){
 		if(Activated){

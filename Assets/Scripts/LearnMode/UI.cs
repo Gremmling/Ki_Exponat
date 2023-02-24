@@ -58,7 +58,7 @@ public class UI : MonoBehaviour
 	public bool isClicked;//when player has choosen a number
 	public bool LearningOnOff = true;//to switch the learn mode on or off
 	public bool FinishScreenIsActivaed = false; //to hide or show the pop up for the finish screen
-	private bool PauseIsClicked = false;//if button pause is clicked
+	private bool PauseIsClicked = true;//if button pause is clicked
 	public bool GameIsPaused = false;//when game is paused
 									   // Start is called before the first frame update
 	void Start()
@@ -76,7 +76,8 @@ public class UI : MonoBehaviour
 		//add on click to pause button
 		BTN_Pause.onClick.AddListener(() =>
 		{
-			PauseIsClicked = !PauseIsClicked;
+			Debug.Log(PauseIsClicked);
+			//	PauseIsClicked = !PauseIsClicked;
 			if (PauseIsClicked)
 			{// if PauseIsClicked == true change value to false and call Pause game
 				PauseGame();
@@ -97,7 +98,6 @@ public class UI : MonoBehaviour
 		//Check if Player is pressing escape while he plays the game.
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
-			PauseIsClicked = !PauseIsClicked;
 			if (GameIsPaused)
 			{//if GameIsPaused = true resume game
 				ResumeGame();
@@ -121,7 +121,7 @@ public class UI : MonoBehaviour
 		//set timescale to 0 so the time is stopped
 		Time.timeScale = 0f;
 		//activate the finish screen pop up
-		FinishScreen.SetActive(true);
+		FinishScreen.SetActiveRecursively(true);
 	}
 
 	private void GoHome()
@@ -137,9 +137,10 @@ public class UI : MonoBehaviour
 	//Function to pause game
 	private void PauseGame()
 	{
+		PauseIsClicked = !PauseIsClicked;
 		GameIsPaused = true;
 		//activate pause popup
-		PausePopUp.SetActive(true);
+		PausePopUp.SetActiveRecursively(true);
 		//disable all buttons
 		Button_EnableOrDisable(false, 3);
 		BTN_ActivateLearning.interactable = false;
@@ -149,9 +150,10 @@ public class UI : MonoBehaviour
 
 	private void ResumeGame()
 	{
+		PauseIsClicked = !PauseIsClicked;
 		GameIsPaused = false;
 		//hide pause popup
-		PausePopUp.SetActive(false);
+		PausePopUp.SetActiveRecursively(false);
 		//is it the players turn so activate all three number buttons for him
 		if (WhosTurn != 1)
 		{

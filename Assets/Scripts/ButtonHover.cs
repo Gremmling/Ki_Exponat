@@ -19,6 +19,14 @@ public class ButtonHover : MonoBehaviour
 	public Vector2 whileHoverVector;
 	public Vector2 bevorHoverVector;
 
+	void OnEnable(){
+		Hovered = false;
+		if(smaller){
+			BTN_Button.GetComponent<RectTransform>().sizeDelta = bevorHoverVector;
+			BTN_Button.GetComponent<BoxCollider>().size = bevorHoverVector;
+		}
+		UpdateSprite();
+	}
 
 	virtual protected void UpdateSprite(){
 		BTN_Button.image.sprite = Sprites[Hovered ? 1 : 0];

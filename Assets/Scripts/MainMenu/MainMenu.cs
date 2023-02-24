@@ -15,11 +15,13 @@ public class MainMenu : MonoBehaviour
     public Button BTN_PlayGame;
     public Button BTN_Tutorial;
     public Button BTN_ResetLearn;
-    public Button BTN_Quit;
+	public Button BTN_OpenCredits;
+	public Button BTN_Quit;
 
 	//Camera and Center of Map to rotate Camera around
 	public Camera Camera;
 	public GameObject CenterObject;
+	public GameObject CreditsPopUp;
 
 
 	//File name and Path to find file
@@ -37,6 +39,9 @@ public class MainMenu : MonoBehaviour
 		BTN_PlayGame.onClick.AddListener(() => PlayGame());
 		BTN_Tutorial.onClick.AddListener(() => OpenTutorial());
 		BTN_ResetLearn.onClick.AddListener(() => ResetFile());
+		BTN_OpenCredits.onClick.AddListener(() => {
+			CreditsPopUp.SetActive(true);
+		});
 		BTN_Quit.onClick.AddListener(() => QuitGame());
 	}
 
@@ -44,6 +49,9 @@ public class MainMenu : MonoBehaviour
 	void Update(){
 		Camera.transform.LookAt(CenterObject.transform.position);
 		Camera.transform.Translate(Vector3.right * Time.deltaTime);
+		if(Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0)){
+			CreditsPopUp.SetActive(false);
+		}
 	}
 
     private void PlayGame(){
