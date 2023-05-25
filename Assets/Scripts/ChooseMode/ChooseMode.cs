@@ -25,6 +25,7 @@ public class ChooseMode : MonoBehaviour
 	//NotesSwitchPerfectAI = true => Show All Notes in the Perfect AI mode, NotesSwitchPerfectAI = false => Just show the possible Notes for the Perfect Ai Mode
 	//FirstTurnSwitch = true => AI starts the game, FirstTurnSwitch = false => Player starts the Game
 	public static bool PerfectMode;
+	public static bool ProgressMode = false;
 	public static bool NotesSwitchPerfectAI;
 	public static bool FirstTurnSwitch;
 
@@ -37,11 +38,12 @@ public class ChooseMode : MonoBehaviour
 	public enum Mode
 	{
 		Perfect = 0,
-		Learn = 1
+		Learn = 1,
+		Progress = 2
 	}
 
 	//Load Main menu Scene
-    public void GoBack(){
+	public void GoBack(){
 		SceneManager.LoadScene("MainMenu");
 	}
 	//Load Game Scene
@@ -52,6 +54,11 @@ public class ChooseMode : MonoBehaviour
         if(GameMode == (int)Mode.Perfect){
 			PerfectMode = true;
         }
+
+		if(GameMode == (int) Mode.Progress){
+			PerfectMode = false;
+			ProgressMode = true;
+		}
 		NotesSwitchPerfectAI = BTN_NotesSwitchPerfectAI.GetComponent<ToggleButton>().Activated;
 		FirstTurnSwitch = BTN_FirstTurnSwitch.GetComponent<ToggleButton>().Activated;
 		SceneManager.LoadScene("LearnGame");

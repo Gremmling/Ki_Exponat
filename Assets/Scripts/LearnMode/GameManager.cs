@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
 	//Object for the saved list with numbers
 	private SaveData saveD;
+	private SaveData ListForProgressMode;
 
 	//enumeration for turns
 	public enum Turn
@@ -61,6 +62,8 @@ public class GameManager : MonoBehaviour
 		new List<int>{1}
 	};
 
+	private List<int> ProgressModeDeleteFromCups = new List<int> {0, 1, 2, 3};
+
 	//string for the text what happens in the game
 	private string explanation = "";
 
@@ -94,16 +97,21 @@ public class GameManager : MonoBehaviour
 
 	//variables to check whiche mode and which settings
 	public static bool perfectMode;
+	public static bool ProgressMode;
+	public static int SliderValue;
 	public bool firstTurn;
 	public bool AllNotesForPerfectAiMode;
 
 	// Start is called before the first frame update
 	void Start()
 	{
+		ListForProgressMode = new SaveData();
 		//set the settings variables
 		firstTurn = ChooseMode.FirstTurnSwitch;
 		AllNotesForPerfectAiMode = ChooseMode.NotesSwitchPerfectAI;
 		perfectMode = ChooseMode.PerfectMode;
+		ProgressMode = ChooseMode.ProgressMode;
+		SliderValue = SliderScript.valueSlider;
 		//set who starts the game
 		if(firstTurn){
 			ActivePlayer = Turn.Player;
@@ -125,10 +133,15 @@ public class GameManager : MonoBehaviour
 			Ui.BTN_ActivateLearning.interactable = false;
 			Ui.LearningOnOff = false;
 			Ui.ChangeLearning();
-			SetNumberPapers(PerfectAINumbers);
+			DontShowNotesAndCups(PerfectAINumbers);
 		}
 		else{
-			SetNumberPapers(saveD.RemainingCups);
+			if(!ProgressMode)
+				SetNumberPapers(saveD.RemainingCups);
+			else{
+				ProgressModeRemoveNumbers();
+				SetNumberPapers(ListForProgressMode.RemainingCups);
+			}
 		}
 		Time.timeScale = 1f;//set time to 1 so its not frozen
 		PauseGame = Ui.GameIsPaused;
@@ -199,9 +212,47 @@ public class GameManager : MonoBehaviour
 			Note_Cup_10
 		};
 	}
+
+	void ProgressModeRemoveNumbers(){
+		Debug.Log("SliderVlaue:" + SliderValue);
+		for (int i = 0; i < SliderValue; i++)
+		{
+			(List<List<int>> CupsForProgressMode, List<int> CupIndices) = GetCupsWithNotes(3);
+			int random = UnityEngine.Random.Range(0, CupsForProgressMode.Count - 1);
+			int index = CupIndices[random];
+			List<int> SelectedCup = CupsForProgressMode[random];
+			RemoveNote(SelectedCup, index);
+		}
+	}
+
+	(List<List<int>> Cups, List<int> Indices) GetCupsWithNotes(int cups){
+		List<List<int>> res = new List<List<int>>();
+		List<int> Indices = new List<int>();
+		for (int i = 0; i < ListForProgressMode.RemainingCups.Count; i++)
+		{
+			if(ListForProgressMode.RemainingCups[i].Count > 1){
+				res.Add(ListForProgressMode.RemainingCups[i]);
+				Indices.Add(i);
+			}
+			if(res.Count == cups)
+				return (Cups:res, Indices:Indices);
+		}
+		return (Cups:res, Indices:Indices);
+	}
+
+	void RemoveNote(List<int> Cup, int WhicheCup){
+		List<int> CopyCup = new List<int>(Cup);
+		if(PerfectAINumbers[WhicheCup].Count != 3){
+			CopyCup.Remove(PerfectAINumbers[WhicheCup][0]);
+		}
+		int removedNumber = CopyCup[UnityEngine.Random.Range(0, CopyCup.Count - 1)];
+		Cup.Remove(removedNumber);
+	}
+
 	//show just the notes the player needs to see. If in every cup is just one note then just show them
 	void SetNumberPapers(List<List<int>> NumberList){
-		if (AllNotesForPerfectAiMode || !perfectMode){
+		Debug.Log(AllNotesForPerfectAiMode);
+		if (!perfectMode || ProgressMode){
 			foreach (var cups in AllCupsWithNotes)
 			{
 				foreach (var item in cups)
@@ -210,7 +261,41 @@ public class GameManager : MonoBehaviour
 				}
 			}
 		}
-			for (int i = 0; i < NumberList.Count; i++)
+		for (int i = 0; i < NumberList.Count; i++)
+			{
+				for (int j = 0; j < NumberList[i].Count; j++)
+				{
+					int cache = NumberList[i][j] - 1;
+					AllCupsWithNotes[i][cache].SetActive(true);
+				}
+		}
+	}
+
+	//activate or deactivates Cups and Notes in the Perfect AI mode
+	void DontShowNotesAndCups(List<List<int>> NumberList){
+		if (!AllNotesForPerfectAiMode)
+		{
+			foreach (var cups in AllCupsWithNotes)
+			{
+				foreach (var item in cups)
+				{
+					item.SetActive(false);
+				}
+			}
+			foreach (var item in Cups)
+			{
+				item.SetActive(false);
+			}
+		}
+		else{
+			foreach (var cups in AllCupsWithNotes)
+			{
+				foreach (var item in cups)
+				{
+					item.SetActive(false);
+				}
+			}
+						for (int i = 0; i < NumberList.Count; i++)
 			{
 				for (int j = 0; j < NumberList[i].Count; j++)
 				{
@@ -218,6 +303,7 @@ public class GameManager : MonoBehaviour
 					AllCupsWithNotes[i][cache].SetActive(true);
 				}
 			}
+		}
 	}
 
 	// check if the game is paused or not
@@ -433,6 +519,8 @@ public class GameManager : MonoBehaviour
 				//if and else to draw from the right list
 				if (perfectMode)
 					number = KI_Draw_Random_Number(PerfectAINumbers[RestAmmountOfCups]);
+				else if(ProgressMode)
+					number = KI_Draw_Random_Number(ListForProgressMode.RemainingCups[RestAmmountOfCups]);
 				else
 					number = KI_Draw_Random_Number(saveD.RemainingCups[RestAmmountOfCups]);
 				lastDrawnNumber = number;

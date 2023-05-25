@@ -16,10 +16,6 @@ public class UI : MonoBehaviour
 	[Range(0, 100)]
 	public Image uiFill;
 
-	public Sprite Sprite_Learn;
-
-	public Sprite Sprite_Outline_Learn;
-
 	//Sprites for turn player or turn AI
 	public Sprite PlayerTurnSprite;
 	public Sprite KiTurnSprite;
