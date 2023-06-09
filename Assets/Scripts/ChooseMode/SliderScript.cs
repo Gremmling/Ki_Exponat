@@ -13,9 +13,19 @@ public class SliderScript : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
+		valueSlider = 0;
 		_slider.onValueChanged.AddListener((v) =>
 		{
-			_sliderText.text = v.ToString("0");
+			double finalValue = v * 5.882352941176471;
+			if(v == 0){
+				_sliderText.text = v.ToString();
+			}
+			else if(v == 17){
+				_sliderText.text = finalValue.ToString();
+			}
+			else{
+				_sliderText.text = finalValue.ToString("#.0000");
+			}
 			valueSlider = (int)v;
 		});
 	}

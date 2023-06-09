@@ -29,4 +29,5 @@ public class ToggleButton : ButtonHover
 			BTN_Button.image.sprite = SpritesDefault[Hovered ? 1 : 0];
 		}
 	}
+
 }

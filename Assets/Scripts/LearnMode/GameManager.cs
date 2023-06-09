@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour
 	//variables to check whiche mode and which settings
 	public static bool perfectMode;
 	public static bool ProgressMode;
+	public static bool allreadyProgessed;
 	public static int SliderValue;
 	public bool firstTurn;
 	public bool AllNotesForPerfectAiMode;
@@ -136,12 +137,9 @@ public class GameManager : MonoBehaviour
 			DontShowNotesAndCups(PerfectAINumbers);
 		}
 		else{
-			if(!ProgressMode)
-				SetNumberPapers(saveD.RemainingCups);
-			else{
+			if(!allreadyProgessed)
 				ProgressModeRemoveNumbers();
-				SetNumberPapers(ListForProgressMode.RemainingCups);
-			}
+			SetNumberPapers(saveD.RemainingCups);
 		}
 		Time.timeScale = 1f;//set time to 1 so its not frozen
 		PauseGame = Ui.GameIsPaused;
@@ -223,15 +221,16 @@ public class GameManager : MonoBehaviour
 			List<int> SelectedCup = CupsForProgressMode[random];
 			RemoveNote(SelectedCup, index);
 		}
+		allreadyProgessed = true;
 	}
 
 	(List<List<int>> Cups, List<int> Indices) GetCupsWithNotes(int cups){
 		List<List<int>> res = new List<List<int>>();
 		List<int> Indices = new List<int>();
-		for (int i = 0; i < ListForProgressMode.RemainingCups.Count; i++)
+		for (int i = 0; i < saveD.RemainingCups.Count; i++)
 		{
-			if(ListForProgressMode.RemainingCups[i].Count > 1){
-				res.Add(ListForProgressMode.RemainingCups[i]);
+			if(saveD.RemainingCups[i].Count > 1){
+				res.Add(saveD.RemainingCups[i]);
 				Indices.Add(i);
 			}
 			if(res.Count == cups)

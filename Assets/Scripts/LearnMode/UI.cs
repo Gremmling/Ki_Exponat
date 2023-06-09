@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.IO;
 using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour
@@ -56,6 +57,10 @@ public class UI : MonoBehaviour
 	public bool FinishScreenIsActivaed = false; //to hide or show the pop up for the finish screen
 	private bool PauseIsClicked = true;//if button pause is clicked
 	public bool GameIsPaused = false;//when game is paused
+
+	private static string fileName = "SaveAi.s";
+	private static string path;
+
 									   // Start is called before the first frame update
 	void Start()
 	{
@@ -64,6 +69,7 @@ public class UI : MonoBehaviour
 		AmmountMatchesChooseButtons[1] = BTN_Ammount_Two;
 		AmmountMatchesChooseButtons[2] = BTN_Ammount_Three;
 		isClicked = false;
+		path = Path.Combine(Application.dataPath, "Save");
 		//add on click to buttons
 		BTN_Ammount_One.onClick.AddListener(() => PlayerChooseNumber(1));
 		BTN_Ammount_Two.onClick.AddListener(() => PlayerChooseNumber(2));
@@ -122,7 +128,13 @@ public class UI : MonoBehaviour
 
 	private void GoHome()
 	{
+		if(File.Exists(Path.Combine(path, fileName))){
+			//File.Delete(path);
+			SaveGameManager.ResetData();
+		}
+		GameManager.allreadyProgessed = false;
 		SceneManager.LoadScene("MainMenu");
+
 	}
 
 	private void NewGame()

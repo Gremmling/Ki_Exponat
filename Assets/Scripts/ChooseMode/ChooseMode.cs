@@ -17,6 +17,13 @@ public class ChooseMode : MonoBehaviour
 	public Button BTN_Learn;
 	public Button BTN_Tipps;
 	public Button BTN_FirstTurn;
+	public Button BTN_Continue;
+	public Button BTN_Back;
+
+	public GameObject PopUpSettings_PerfectMode;
+
+	public GameObject PopUpSettings_LearnMode;
+	public Button DummyMode;
 
 
 
@@ -32,6 +39,10 @@ public class ChooseMode : MonoBehaviour
 	public GameObject BTN_NotesSwitchPerfectAI;
 	public GameObject BTN_FirstTurnSwitch;
 
+
+	void Start(){
+		//BTN_Back.onClick.AddListener(() => ClosePopUp());
+	}
 
 
 	//Enum for the two Modes
@@ -62,5 +73,33 @@ public class ChooseMode : MonoBehaviour
 		NotesSwitchPerfectAI = BTN_NotesSwitchPerfectAI.GetComponent<ToggleButton>().Activated;
 		FirstTurnSwitch = BTN_FirstTurnSwitch.GetComponent<ToggleButton>().Activated;
 		SceneManager.LoadScene("LearnGame");
+	}
+
+	public void OpenPopUp(int whichPopUp){
+		if(whichPopUp == 0){
+			PopUpSettings_PerfectMode.SetActiveRecursively(true);
+		}
+		else{
+			PopUpSettings_LearnMode.SetActiveRecursively(true);
+		}
+		BTN_Exit.interactable = false;
+		BTN_FirstTurn.interactable = false;
+		DummyMode.interactable = false;
+		BTN_Learn.interactable = false;
+		BTN_PerfectAI.interactable = false;
+	}
+
+	public void ClosePopUp(int whichPopUp){
+		if(whichPopUp == 0){
+			PopUpSettings_PerfectMode.SetActiveRecursively(false);
+		}
+		else{
+			PopUpSettings_LearnMode.SetActiveRecursively(false);
+		}
+		BTN_Exit.interactable = true;
+		BTN_FirstTurn.interactable = true;
+		DummyMode.interactable = true;
+		BTN_Learn.interactable = true;
+		BTN_PerfectAI.interactable = true;
 	}
 }
