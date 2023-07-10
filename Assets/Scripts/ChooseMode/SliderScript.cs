@@ -24,7 +24,8 @@ public class SliderScript : MonoBehaviour
 				_sliderText.text = finalValue.ToString();
 			}
 			else{
-				_sliderText.text = finalValue.ToString("#.0000");
+				//_sliderText.text = finalValue.ToString("#.0000");
+				_sliderText.text = finalValue.ToString("#.0");
 			}
 			valueSlider = (int)v;
 		});

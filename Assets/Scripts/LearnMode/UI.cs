@@ -21,6 +21,13 @@ public class UI : MonoBehaviour
 	public Sprite PlayerTurnSprite;
 	public Sprite KiTurnSprite;
 
+	//slider and _sliderText
+	[SerializeField] private Slider _slider;
+	[SerializeField] private TextMeshProUGUI _sliderText;
+	private static double SliderNumber;
+	private static bool firstRound;
+	private double finalValue;
+
 	//Objects Images which Turn
 	public Image TurnImg;
 
@@ -53,7 +60,7 @@ public class UI : MonoBehaviour
 
 	//booleans for diffrent moments
 	public bool isClicked;//when player has choosen a number
-	public bool LearningOnOff = true;//to switch the learn mode on or off
+	public static bool LearningOnOff;//to switch the learn mode on or off
 	public bool FinishScreenIsActivaed = false; //to hide or show the pop up for the finish screen
 	private bool PauseIsClicked = true;//if button pause is clicked
 	public bool GameIsPaused = false;//when game is paused
@@ -65,6 +72,7 @@ public class UI : MonoBehaviour
 	void Start()
 	{
 		//fill the three Buttons into the array
+		Debug.Log(LearningOnOff);
 		AmmountMatchesChooseButtons[0] = BTN_Ammount_One;
 		AmmountMatchesChooseButtons[1] = BTN_Ammount_Two;
 		AmmountMatchesChooseButtons[2] = BTN_Ammount_Three;
@@ -76,6 +84,10 @@ public class UI : MonoBehaviour
 		BTN_Ammount_Three.onClick.AddListener(() => PlayerChooseNumber(3));
 		BTN_ActivateLearning.onClick.AddListener(() => ChangeLearning());
 		//add on click to pause button
+		if(LearningOnOff)
+			BTN_ActivateLearning.GetComponent<ToggleButton>().Activated = true;
+		else if(!LearningOnOff)
+			BTN_ActivateLearning.GetComponent<ToggleButton>().Activated = false;
 		BTN_Pause.onClick.AddListener(() =>
 		{
 			Debug.Log(PauseIsClicked);
@@ -93,6 +105,28 @@ public class UI : MonoBehaviour
 		BTN_NewGame.onClick.AddListener(() => NewGame());
 		BTN_Home.onClick.AddListener(() => GoHome());
 		BTN_Exit.onClick.AddListener(() => GoHome());
+		if(!firstRound)
+			SliderNumber = SliderScript.valueSlider;
+		else
+		{
+			++SliderNumber;
+		}
+		finalValue = SliderNumber * 5.882352941176471;
+
+		Debug.Log("Final Number" + finalValue);
+		if(SliderNumber == 0){
+				_sliderText.text = SliderNumber.ToString();
+			}
+			else if(SliderNumber == 17){
+				_sliderText.text = finalValue.ToString();
+			}
+			else{
+				//_sliderText.text = finalValue.ToString("#.0000");
+				_sliderText.text = finalValue.ToString("#.0");
+			}
+			Debug.Log("slider" + _sliderText.text);
+		_slider.value = (int)SliderNumber;
+		Debug.Log("slider value" + _slider.value);
 	}
 
 	void Update()
@@ -128,17 +162,21 @@ public class UI : MonoBehaviour
 
 	private void GoHome()
 	{
+
+		firstRound = false;
 		if(File.Exists(Path.Combine(path, fileName))){
 			//File.Delete(path);
 			SaveGameManager.ResetData();
 		}
 		GameManager.allreadyProgessed = false;
+		setLearning(false);
 		SceneManager.LoadScene("MainMenu");
 
 	}
 
 	private void NewGame()
 	{
+		firstRound = true;
 		SceneManager.LoadScene("LearnGame");
 	}
 
@@ -178,12 +216,22 @@ public class UI : MonoBehaviour
 	public void ChangeLearning()
 	{
 		LearningOnOff = !LearningOnOff;
+
+		Debug.Log(LearningOnOff);
+	}
+
+	public void setLearning(bool setLearning){
+		LearningOnOff = setLearning;
 	}
 
 	//set value of the fill ammount of the Circle
 	public void FillCircleValue(float value)
 	{
 		uiFill.fillAmount = value;
+	}
+
+	public bool getLearnStatus(){
+		return LearningOnOff;
 	}
 
 	//enabel or dissable or enable the number buttons

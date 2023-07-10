@@ -132,8 +132,9 @@ public class GameManager : MonoBehaviour
 		if (perfectMode)
 		{
 			Ui.BTN_ActivateLearning.interactable = false;
-			Ui.LearningOnOff = false;
-			Ui.ChangeLearning();
+			Ui.setLearning(false);
+			//Ui.LearningOnOff = false;
+			//Ui.ChangeLearning();
 			DontShowNotesAndCups(PerfectAINumbers);
 		}
 		else{
@@ -164,7 +165,7 @@ public class GameManager : MonoBehaviour
 		PauseGame = Ui.GameIsPaused;
 		if (!PauseGame)//game not pause then it needs to check diffrent things
 		{
-			LearnBool = Ui.LearningOnOff;
+			LearnBool = Ui.getLearnStatus();
 			float speedMultiplier = Mathf.Clamp((ElapsedAnimationTime * ElapsedAnimationTime), 0, 2);//set speed multiplier with elapsedAnimationTime
 			if (NeedsToRotate || NeedsToMove)
 				ElapsedAnimationTime += Time.deltaTime;//while the match needs to move add time on elapsed time so the matches moves faster the longer they move
@@ -335,7 +336,7 @@ public class GameManager : MonoBehaviour
 			explanation = "Der Mensch hat gewonnen.";
 			Ui.SendMassageToChat(explanation);
 			yield return StartCoroutine(Timer(5));
-			if (LearnBool && !perfectMode)//ai should learn
+			if (!LearnBool && !perfectMode)//ai should learn
 			{
 				explanation = "Der Computer beginnt zu lernen.";
 				Ui.SendMassageToChat(explanation);
