@@ -12,6 +12,7 @@ public class UI : MonoBehaviour
 	//Objects for the two Pop up windows
 	public GameObject FinishScreen;
 	public GameObject PausePopUp;
+	public GameObject ProgressBar;
 
 	//Objects for the Circle
 	[Range(0, 100)]
@@ -26,6 +27,7 @@ public class UI : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _sliderText;
 	private static double SliderNumber;
 	private static bool firstRound;
+	private static bool KI_Lose;
 	private double finalValue;
 
 	//Objects Images which Turn
@@ -105,11 +107,13 @@ public class UI : MonoBehaviour
 		BTN_NewGame.onClick.AddListener(() => NewGame());
 		BTN_Home.onClick.AddListener(() => GoHome());
 		BTN_Exit.onClick.AddListener(() => GoHome());
-		if(!firstRound)
-			SliderNumber = SliderScript.valueSlider;
-		else
-		{
-			++SliderNumber;
+		if(KI_Lose && !LearningOnOff){
+			if(!firstRound)
+				SliderNumber = SliderScript.valueSlider;
+			else
+			{
+				++SliderNumber;
+			}
 		}
 		finalValue = SliderNumber * 5.882352941176471;
 
@@ -143,6 +147,14 @@ public class UI : MonoBehaviour
 				PauseGame();
 			}
 		}
+	}
+
+	public void Set_Ki_Lose(bool lose){
+		KI_Lose = lose;
+	}
+
+	public void Disable_ProgressBar(bool active){
+		ProgressBar.SetActive(active);
 	}
 
 	//Function to show the finish screen

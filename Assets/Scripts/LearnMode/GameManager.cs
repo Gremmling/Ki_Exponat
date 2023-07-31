@@ -128,11 +128,13 @@ public class GameManager : MonoBehaviour
 		saveD = SaveGameManager.Load();
 		//dissable buttons if the game is in the perfect ai mode
 		MakeList();
+		Ui.Disable_ProgressBar(true);
 		//SetNumberPapers();
 		if (perfectMode)
 		{
 			Ui.BTN_ActivateLearning.interactable = false;
 			Ui.setLearning(false);
+			Ui.Disable_ProgressBar(false);
 			//Ui.LearningOnOff = false;
 			//Ui.ChangeLearning();
 			DontShowNotesAndCups(PerfectAINumbers);
@@ -327,6 +329,7 @@ public class GameManager : MonoBehaviour
 		{
 			yield return StartCoroutine(Timer(5));//wait for the timer
 			explanation = "Der Computer hat gewonnen.";
+			Ui.Set_Ki_Lose(false);
 			Ui.SendMassageToChat(explanation);
 			yield return StartCoroutine(Timer(5));
 			Ui.ShowFinishScreen();
@@ -335,6 +338,7 @@ public class GameManager : MonoBehaviour
 		{
 			explanation = "Der Mensch hat gewonnen.";
 			Ui.SendMassageToChat(explanation);
+			Ui.Set_Ki_Lose(true);
 			yield return StartCoroutine(Timer(5));
 			if (!LearnBool && !perfectMode)//ai should learn
 			{
