@@ -27,7 +27,7 @@ public class UI : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI _sliderText;
 	private static double SliderNumber;
 	private static bool firstRound;
-	private static bool KI_Lose;
+	private static bool KI_Lose = false;
 	private double finalValue;
 
 	//Objects Images which Turn
@@ -107,30 +107,30 @@ public class UI : MonoBehaviour
 		BTN_NewGame.onClick.AddListener(() => NewGame());
 		BTN_Home.onClick.AddListener(() => GoHome());
 		BTN_Exit.onClick.AddListener(() => GoHome());
-		if(KI_Lose && !LearningOnOff){
+		//if(KI_Lose && !LearningOnOff){
 			if(!firstRound)
 				SliderNumber = SliderScript.valueSlider;
-			else
+			else if(KI_Lose && !LearningOnOff)
 			{
 				++SliderNumber;
 			}
-		}
-		finalValue = SliderNumber * 5.882352941176471;
+			finalValue = SliderNumber * 5.882352941176471;
 
-		Debug.Log("Final Number" + finalValue);
-		if(SliderNumber == 0){
-				_sliderText.text = SliderNumber.ToString();
-			}
-			else if(SliderNumber == 17){
-				_sliderText.text = finalValue.ToString();
-			}
-			else{
-				//_sliderText.text = finalValue.ToString("#.0000");
-				_sliderText.text = finalValue.ToString("#.0");
-			}
-			Debug.Log("slider" + _sliderText.text);
-		_slider.value = (int)SliderNumber;
-		Debug.Log("slider value" + _slider.value);
+			Debug.Log("Final Number" + finalValue);
+			if(SliderNumber == 0){
+					_sliderText.text = SliderNumber.ToString();
+				}
+				else if(SliderNumber == 17){
+					_sliderText.text = finalValue.ToString();
+				}
+				else{
+					//_sliderText.text = finalValue.ToString("#.0000");
+					_sliderText.text = finalValue.ToString("#.0");
+				}
+				Debug.Log("slider" + _sliderText.text);
+			_slider.value = (int)SliderNumber;
+			Debug.Log("slider value" + _slider.value);
+		//}
 	}
 
 	void Update()
