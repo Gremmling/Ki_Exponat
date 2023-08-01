@@ -28,6 +28,7 @@ public class UI : MonoBehaviour
 	private static double SliderNumber;
 	private static bool firstRound;
 	private static bool KI_Lose = false;
+	private static bool KI_CanLearn;
 	private double finalValue;
 
 	//Objects Images which Turn
@@ -110,7 +111,7 @@ public class UI : MonoBehaviour
 		//if(KI_Lose && !LearningOnOff){
 			if(!firstRound)
 				SliderNumber = SliderScript.valueSlider;
-			else if(KI_Lose && !LearningOnOff)
+			else if(KI_Lose && !LearningOnOff && KI_CanLearn)
 			{
 				++SliderNumber;
 			}
@@ -151,6 +152,10 @@ public class UI : MonoBehaviour
 
 	public void Set_Ki_Lose(bool lose){
 		KI_Lose = lose;
+	}
+
+		public void Set_Ki_CanLearn(bool learn){
+		KI_CanLearn = learn;
 	}
 
 	public void Disable_ProgressBar(bool active){

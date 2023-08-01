@@ -355,12 +355,14 @@ public class GameManager : MonoBehaviour
 							yield return StartCoroutine(Timer(5));
 							AllCupsWithNotes[i][drawnNumbers[i] - 1].SetActive(false);
 							saveD.RemainingCups[i].Remove(drawnNumbers[i]);
+							Ui.Set_Ki_CanLearn(true);
 							break;
 						}
 						else //if the cups has one number and not more it needs to go to the next cup
 						{
 							explanation = "Aus dem Becher " + (i + 2) + " wird keine Nummer entfernt, weil es nur noch eine Ziehmöglichkeit gibt.";
 							Ui.SendMassageToChat(explanation);
+							Ui.Set_Ki_CanLearn(false);
 							yield return StartCoroutine(Timer(5));
 						}
 					}
